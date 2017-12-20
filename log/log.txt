@@ -1,0 +1,3 @@
+fold = 1 / 10 ---
+Epoch 001 | valid_R2: -415.6020 | train_loss: 808.8565 | valid_loss: 315.3272
+Epoch 002 | valid_R2: -209.0051 | train_loss: 1444.1358 | valid_loss: 197.9292
