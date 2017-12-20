@@ -9,5 +9,4 @@ with open('../00.data/v10_170713_5x5_label.pickle','rb') as handle:
 print(data.shape)
 print(label.shape)
 
-np.savez('sample_dataset/5x5_data', x=data[:100])
-np.savez('sample_dataset/5x5_label', y=label[:100])
+np.savez('5x5_data_test', x=data)
