@@ -1,9 +1,0 @@
-fold = 1 / 10 ---
-Epoch 001 | valid_R2: -415.6020 | train_loss: 808.8565 | valid_loss: 315.3272
-Epoch 002 | valid_R2: -209.0051 | train_loss: 1444.1358 | valid_loss: 197.9292
-Epoch 003 | valid_R2: -90.3706 | train_loss: 379.7654 | valid_loss: 102.2452
-Epoch 004 | valid_R2: -93.2955 | train_loss: 100.5402 | valid_loss: 96.4836
-Epoch 005 | valid_R2: -62.6314 | train_loss: 32.1558 | valid_loss: 74.8780
-fold = 2 / 10 ---
-Epoch 001 | valid_R2: -53.4555 | train_loss: 636.4958 | valid_loss: 394.1759
-Epoch 002 | valid_R2: -32.4668 | train_loss: 1529.7502 | valid_loss: 126.1859
