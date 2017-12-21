@@ -31,7 +31,7 @@ class network:
 
 		self.X 		= tf.placeholder(tf.float32, [None, IMG_SIZE, IMG_SIZE, NUM_CHANNELS])
 		self.Y 		= tf.placeholder(tf.float32, [None, 1])
-		self.Train 	= tf.placeholder(tf.bool)
+		self.Train 	= tf.placeholder(tf.bool, name="train_phase")
 	
 		self.logits   = self.model(self.X, self.W, self.B, self.train_batch_size, self.Train)
 		self.evaluate = self.model(self.X, self.W, self.B, self.train_batch_size, self.Train)
