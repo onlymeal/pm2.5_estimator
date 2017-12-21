@@ -14,15 +14,15 @@ TRAIN_EPOCH	 	 = 100
 LEARNING_RATE  	 = 0.0005
 DECAY_RATE 		 = 0.95
 FOLD 			 = 10
-TRAIN_BATCH_SIZE = 50
-VALID_BATCH_SIZE = 50
+TRAIN_BATCH_SIZE = 100
+VALID_BATCH_SIZE = 100
 DISPLAY_STEP 	 = 1
 
 # define hyper_parameter for networks
-n_hidden_1 = 1024
-n_hidden_2 = 1024
-n_conv_1   = 256
-n_conv_2   = 128
+n_hidden_1 = 2048
+n_hidden_2 = 2048
+n_conv_1   = 512
+n_conv_2   = 256
 
 def set_weights():
 	W = {
@@ -47,13 +47,12 @@ def set_weights():
 	return W, B
 
 def model(X, W, B, batch_size, train=False):
-    #cv = tf.nn.bias_add(tf.nn.conv2d(X, W['c1'], strides=[1,1,1,1], padding='SAME'), B['c1'])
-    cv = tf.nn.conv2d(X, W['c1'], strides=[1,1,1,1], padding='SAME')
+    
+    cv = tf.nn.conv2d(X, W['c1'], strides=[1,1,1,1], padding='SAME') + B['c1']
     cv = batch_norm(cv, B['b1'], B['g1'])
     cv = tf.nn.relu(cv)
     
-    #cv = tf.nn.bias_add(tf.nn.conv2d(cv, W['c2'], strides=[1,1,1,1], padding='SAME'), B['c2'])
-    cv = tf.nn.conv2d(cv, W['c2'], strides=[1,1,1,1], padding='SAME')
+    cv = tf.nn.conv2d(cv, W['c2'], strides=[1,1,1,1], padding='SAME') + B['c2']
     cv = batch_norm(cv, B['b2'], B['g2'])
     cv = tf.nn.relu(cv)
     
