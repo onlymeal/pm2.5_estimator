@@ -22,6 +22,8 @@ def print_file(data, f):
     return
 
 def get_R2(pred, y_valid):
+    pred = pred.reshape(pred.shape[0], 1)
+    y_valid = y_valid.reshape(y_valid.shape[0], 1)
     return 1-(np.sum(np.square(y_valid - pred)) / np.sum(np.square(y_valid - np.mean(y_valid))))
 
 def split_set(data_set, label_set, fold, k):
@@ -58,20 +60,9 @@ def split_set(data_set, label_set, fold, k):
 def load_batch(x_train, y_train, batch_size, n):
     
     return x_train[batch_size*(n-1):batch_size*n,], y_train[batch_size*(n-1):batch_size*n,].reshape(batch_size, 1)
-    
-def norm_by_std_for_y(train):
-    mean = np.mean(train, 0)
-    std = np.std(train, 0) + 1e-8
-    
-    return (train - mean)/std, mean, std
-    
-def norm_by_std(train, val):
-    mean = np.mean(train, 0)
-    std = np.std(train, 0) + 1e-8
-    
-    return (train - mean)/std, (val - mean)/std
 
 def norm_by_std_nan(train, val):
+    
     mask = np.ma.array(train, mask=np.isnan(train))
     mean = np.mean(mask, 0)
     std = np.std(mask, 0)
@@ -79,7 +70,7 @@ def norm_by_std_nan(train, val):
     train = (train - mean) / std
     train = np.where(train == np.nan, 0, train)
     train = np.nan_to_num(train)
-
+    
     val = (val-mean)/std
     val = np.where(val == np.nan, 0, val)
     val = np.nan_to_num(val)

@@ -3,19 +3,19 @@ import numpy as np
 import tensorflow as tf
 
 # define constant
-DATA_PATH 		= "sample_dataset/5x5_data.npz"
-LABEL_PATH		= "sample_dataset/5x5_label.npz"
+DATA_PATH 		= "sample_dataset/5x5_sample_dataset.npz"
+LABEL_PATH		= "sample_dataset/5x5_sample_label.npz"
 SEED 			= 66478
 IMG_SIZE 		= 5
 NUM_CHANNELS 	= 74
 
 # define hyper-parameter for train
-TRAIN_EPOCH	 	 = 5
+TRAIN_EPOCH	 	 = 100
 LEARNING_RATE  	 = 0.0005
 DECAY_RATE 		 = 0.95
 FOLD 			 = 10
-TRAIN_BATCH_SIZE = 10
-VALID_BATCH_SIZE = 10
+TRAIN_BATCH_SIZE = 50
+VALID_BATCH_SIZE = 50
 DISPLAY_STEP 	 = 1
 
 # define hyper_parameter for networks

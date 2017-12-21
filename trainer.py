@@ -45,7 +45,7 @@ class network:
 		print(x_train.shape, self.y_train.shape, x_valid.shape, self.y_valid.shape)
 
 		x_train, x_valid = util.norm_by_std_nan(x_train, x_valid)
-		print("dsa")
+		
 		self.x_train = x_train.reshape(x_train.shape[0], IMG_SIZE, IMG_SIZE, NUM_CHANNELS)
 		self.x_valid = x_valid.reshape(x_valid.shape[0], IMG_SIZE, IMG_SIZE, NUM_CHANNELS)
 
@@ -80,7 +80,7 @@ class network:
 					for step in range(train_total_batch):
 						batch_x, batch_y = util.load_batch(self.x_train, self.y_train, self.train_batch_size, step+1)
 						feed_dict = {self.X : batch_x, self.Y : batch_y, self.Train : True}
-						_, batch_loss = sess.run([self.optimizer, self.loss], feed_dict = feed_dict)
+						_, batch_loss, learning_rate = sess.run([self.optimizer, self.loss, self.learning_rate], feed_dict = feed_dict)
 						train_loss += batch_loss
 					train_loss /= train_total_batch
 
@@ -98,9 +98,9 @@ class network:
 
 					# Calculate R2
 					pred = np.array(pred).reshape(-1, 1)
-					valid_R2 = util.get_R2(pred, self.y_valid[:pred.shape[0]])					
+					valid_R2 = util.get_R2(pred, self.y_valid[:pred.shape[0]])
 					
 					if (epoch+1) % self.display_step == 0 :
-						util.print_file("Epoch %03d | valid_R2: %.4f | train_loss: %.4f | valid_loss: %.4f"
-							%(epoch+1, valid_R2, train_loss, valid_loss), self.log_file)
+						util.print_file("Epoch %03d | valid_R2: %.4f | train_loss: %.4f | valid_loss: %.4f | learning rate: %.4f"
+							%(epoch+1, valid_R2, train_loss, valid_loss, learning_rate), self.log_file)
 		print("train done!!")
