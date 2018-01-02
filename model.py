@@ -2,9 +2,11 @@
 import numpy as np
 import tensorflow as tf
 
+name = 'old_batch_norm'
+
 # define constant
-DATA_PATH 		= "sample_dataset/5x5_sample_dataset.npz"
-LABEL_PATH		= "sample_dataset/5x5_sample_label.npz"
+DATA_PATH 		= "v10_170713_5x5_dataset.npz"
+LABEL_PATH		= "v10_170713_5x5_label.npz"
 SEED 			= 66478
 IMG_SIZE 		= 5
 NUM_CHANNELS 	= 74
@@ -17,6 +19,7 @@ FOLD 			 = 10
 TRAIN_BATCH_SIZE = 100
 VALID_BATCH_SIZE = 100
 DISPLAY_STEP 	 = 1
+noise_std 		 = 0.01
 
 # define hyper_parameter for networks
 n_hidden_1 = 1024
@@ -73,6 +76,10 @@ def model(X, W, B, batch_size, train_phase):
     out  = tf.matmul(fc, W['out']) + B['out']
     return out
 
+def Gaussian_noise(input_X, std = 0.01):
+    new_X = input_X + tf.random_normal(tf.shape(input_X), mean = 0.0, stddev = std, dtype = tf.float32)
+    return new_X
+
 def batch_norm_old(x, bn_b, bn_g, phase_train):
     
     beta = bn_b
@@ -82,17 +89,33 @@ def batch_norm_old(x, bn_b, bn_g, phase_train):
     normed = tf.nn.batch_normalization(x, batch_mean, batch_var, beta, gamma, 1e-3)
     return normed
 
-def batch_norm(x, beta, gamma, phase_train):
-    batch_mean, batch_var = tf.nn.moments(x, [0,1,2], name='moments')
-    ema = tf.train.ExponentialMovingAverage(decay=0.5)
+def batch_norm(x, n_out, phase_train):
+    """
+    Batch normalization on convolutional maps.
+    Ref.: http://stackoverflow.com/questions/33949786/how-could-i-use-batch-normalization-in-tensorflow
+    Args:
+        x:           Tensor, 4D BHWD input maps
+        n_out:       integer, depth of input maps
+        phase_train: boolean tf.Varialbe, true indicates training phase
+        scope:       string, variable scope
+    Return:
+        normed:      batch-normalized maps
+    """
+    with tf.variable_scope('bn'):
+        beta = tf.Variable(tf.constant(0.0, shape=[n_out]),
+                                     name='beta', trainable=True)
+        gamma = tf.Variable(tf.constant(1.0, shape=[n_out]),
+                                      name='gamma', trainable=True)
+        batch_mean, batch_var = tf.nn.moments(x, [0,1,2], name='moments')
+        ema = tf.train.ExponentialMovingAverage(decay=0.5)
 
-    def mean_var_with_update():
-        ema_apply_op = ema.apply([batch_mean, batch_var])
-        with tf.control_dependencies([ema_apply_op]):
-            return tf.identity(batch_mean), tf.identity(batch_var)
+        def mean_var_with_update():
+            ema_apply_op = ema.apply([batch_mean, batch_var])
+            with tf.control_dependencies([ema_apply_op]):
+                return tf.identity(batch_mean), tf.identity(batch_var)
 
-    mean, var = tf.cond(phase_train,
-                        mean_var_with_update,
-                        lambda: (ema.average(batch_mean), ema.average(batch_var)))
-    normed = tf.nn.batch_normalization(x, mean, var, beta, gamma, 1e-3)
+        mean, var = tf.cond(phase_train,
+                            mean_var_with_update,
+                            lambda: (ema.average(batch_mean), ema.average(batch_var)))
+        normed = tf.nn.batch_normalization(x, mean, var, beta, gamma, 1e-3)
     return normed

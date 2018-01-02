@@ -3,12 +3,13 @@
 import tensorflow as tf
 import numpy as np
 
-import model
+import model_noise01 as model
 import util
 import trainer
 
 # define log file descriptor
-log_file = open("log/log.txt", 'w')
+log_file = open("log/log_"+model.name+".txt", 'w')
+weight_file = "weight/"
 
 # load dataset
 data, label = util.load_data(model.DATA_PATH, model.LABEL_PATH)
