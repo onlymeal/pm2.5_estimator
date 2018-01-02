@@ -34,7 +34,6 @@ class network:
 		self.Train 	= tf.placeholder(tf.bool, name="train_phase")
 	
 		self.logits   = self.model(self.X, self.W, self.B, self.train_batch_size, self.Train)
-		self.evaluate = self.model(self.X, self.W, self.B, self.train_batch_size, self.Train)
 		print("Done")
 
 	def build_graph(self, fold_idx):
@@ -94,7 +93,7 @@ class network:
 						batch_x, batch_y = util.load_batch(self.x_valid, self.y_valid, self.valid_batch_size, step+1)
 						feed_dict = {self.X : batch_x, self.Y : batch_y, self.Train : False}
 						batch_loss = sess.run(self.loss, feed_dict = feed_dict)
-						pred.append(sess.run(self.evaluate, feed_dict = feed_dict))
+						pred.append(sess.run(self.logits, feed_dict = feed_dict))
 						valid_loss += batch_loss
 					valid_loss /= valid_total_batch
 
@@ -106,6 +105,9 @@ class network:
 						util.print_file("Epoch %03d | valid_R2: %.4f | train_loss: %.4f | valid_loss: %.4f | learning rate: %.4f"
 							%(epoch+1, valid_R2, train_loss, valid_loss, learning_rate), self.log_file)
 					log_epoch.append([epoch+1, valid_R2, train_loss, valid_loss, learning_rate])
+					#for i in range(pred.shape[0]):
+					#	print(pred[i], self.y_valid[:pred.shape[0]][i])
+					#exit()
 			log_fold.append(log_epoch)
 		log_fold = np.array(log_fold)
 		util.get_result(log_fold, self.log_file)
