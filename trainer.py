@@ -67,12 +67,14 @@ class network:
 
 	def update(self):
 		print("update model...")
+		
+		log_fold  = []
 		for fold_idx in range(self.fold) :
 			util.print_file("fold = %d / %d ---" % (fold_idx+1, self.fold), self.log_file)
 			self.build_graph(fold_idx)
 			with tf.Session() as sess :
 				sess.run(tf.global_variables_initializer())
-
+				log_epoch = []
 				for epoch in range(self.train_epoch):
 					# Train phase
 					train_loss = 0.
@@ -103,4 +105,8 @@ class network:
 					if (epoch+1) % self.display_step == 0 :
 						util.print_file("Epoch %03d | valid_R2: %.4f | train_loss: %.4f | valid_loss: %.4f | learning rate: %.4f"
 							%(epoch+1, valid_R2, train_loss, valid_loss, learning_rate), self.log_file)
+					log_epoch.append([epoch+1, valid_R2, train_loss, valid_loss, learning_rate])
+			log_fold.append(log_epoch)
+		log_fold = np.array(log_fold)
+		util.get_result(log_fold, self.log_file)
 		print("train done!!")

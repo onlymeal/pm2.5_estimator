@@ -18,8 +18,12 @@ def load_data(data_path, label_path):
 def print_file(data, f):
     print (data)
     f.write(data+"\n")
-    
-    return
+
+def get_result(data, log_file):
+    mean_fold = np.mean(data, 0)
+    epoch = np.argmax(mean_fold[:, 0])
+    print_file("Best R2: %.4f | epoch: %d | train_loss: %.4f | valid_loss: %.4f"
+                            %(mean_fold[epoch, 1], mean_fold[epoch, 0], mean_fold[epoch, 2], mean_fold[epoch, 3]), log_file)
 
 def get_R2(pred, y_valid):
     pred = pred.reshape(pred.shape[0], 1)

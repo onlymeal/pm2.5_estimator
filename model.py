@@ -2,24 +2,22 @@
 import numpy as np
 import tensorflow as tf
 
-name = 'old_batch_norm'
-
 # define constant
-DATA_PATH 		= "v10_170713_5x5_dataset.npz"
-LABEL_PATH		= "v10_170713_5x5_label.npz"
+DATA_PATH 		= "../00.data/v10_170713_5x5_dataset.npz"
+LABEL_PATH		= "../00.data/v10_170713_5x5_label.npz"
 SEED 			= 66478
 IMG_SIZE 		= 5
 NUM_CHANNELS 	= 74
 
 # define hyper-parameter for train
-TRAIN_EPOCH	 	 = 100
+TRAIN_EPOCH	 	 = 500
 LEARNING_RATE  	 = 0.0005
 DECAY_RATE 		 = 0.95
 FOLD 			 = 10
 TRAIN_BATCH_SIZE = 100
 VALID_BATCH_SIZE = 100
 DISPLAY_STEP 	 = 1
-noise_std 		 = 0.01
+NOISE_STD 		 = 0.5
 
 # define hyper_parameter for networks
 n_hidden_1 = 1024
@@ -51,6 +49,8 @@ def set_weights():
 	return W, B
 
 def model(X, W, B, batch_size, train_phase):
+
+    X = Gaussian_noise(X, NOISE_STD)
     
     cv = tf.nn.conv2d(X, W['c1'], strides=[1,1,1,1], padding='VALID') + B['c1']
     cv = batch_norm_old(cv, B['b1'], B['g1'], train_phase)
@@ -76,8 +76,8 @@ def model(X, W, B, batch_size, train_phase):
     out  = tf.matmul(fc, W['out']) + B['out']
     return out
 
-def Gaussian_noise(input_X, std = 0.01):
-    new_X = input_X + tf.random_normal(tf.shape(input_X), mean = 0.0, stddev = std, dtype = tf.float32)
+def Gaussian_noise(input_X, std=0.01):
+    new_X = input_X + tf.random_normal(tf.shape(input_X), mean=0.0, stddev=std, dtype=tf.float32)
     return new_X
 
 def batch_norm_old(x, bn_b, bn_g, phase_train):

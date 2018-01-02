@@ -3,7 +3,7 @@
 import tensorflow as tf
 import numpy as np
 
-import model_noise01 as model
+import model
 import util
 import trainer
 
