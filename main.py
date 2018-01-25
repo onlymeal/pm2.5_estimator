@@ -28,6 +28,7 @@ param = {
 	"train_batch_size" 	: model.TRAIN_BATCH_SIZE,
 	"valid_batch_size"  : model.VALID_BATCH_SIZE,
 	"display_step"     	: model.DISPLAY_STEP,
+	"save_step"			: model.SAVE_STEP,
 	"log_file"			: log_file
 }
 

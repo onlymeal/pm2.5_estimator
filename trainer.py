@@ -25,14 +25,14 @@ class network:
 		self.train_batch_size 	= param["train_batch_size"]
 		self.valid_batch_size 	= param["valid_batch_size"]
 		self.display_step 		= param["display_step"]
-		self.model 				= param["model"]
-
+		self.save_step	 		= param["save_step"]
+		self.model				= param["model"]
 		self.log_file			= param["log_file"]
 
 		self.X 		= tf.placeholder(tf.float32, [None, IMG_SIZE, IMG_SIZE, NUM_CHANNELS])
 		self.Y 		= tf.placeholder(tf.float32, [None, 1])
 		self.Train 	= tf.placeholder(tf.bool, name="train_phase")
-	
+		
 		self.logits   = self.model(self.X, self.W, self.B, self.train_batch_size, self.Train)
 		print("Done")
 
@@ -66,7 +66,7 @@ class network:
 
 	def update(self):
 		print("update model...")
-		
+		weight = []##################
 		log_fold  = []
 		for fold_idx in range(self.fold) :
 			util.print_file("fold = %d / %d ---" % (fold_idx+1, self.fold), self.log_file)
@@ -108,7 +108,11 @@ class network:
 					#for i in range(pred.shape[0]):
 					#	print(pred[i], self.y_valid[:pred.shape[0]][i])
 					#exit()
+					if (epoch+1) % self.save_step == 0 :############
+						weight.append(sess.run(self.W))#################
 			log_fold.append(log_epoch)
 		log_fold = np.array(log_fold)
+		weight = np.array(weight) ##############
+		np.savez("weights", weight=weight.reshape(self.fold, int(weight.shape[0]/self.fold)))################
 		util.get_result(log_fold, self.log_file)
 		print("train done!!")

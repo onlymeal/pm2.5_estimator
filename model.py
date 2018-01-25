@@ -5,20 +5,21 @@ import tensorflow as tf
 name = 'old_batch_norm'
 
 # define constant
-DATA_PATH 		= "../00.data/v10_170713_5x5_dataset.npz"
-LABEL_PATH		= "../00.data/v10_170713_5x5_label.npz"
+DATA_PATH 		= "sample_dataset/5x5_sample_dataset_instance_norm.npz"
+LABEL_PATH		= "sample_dataset/5x5_sample_label.npz"
 SEED 			= 66478
 IMG_SIZE 		= 5
 NUM_CHANNELS 	= 74
 
 # define hyper-parameter for train
-TRAIN_EPOCH	 	 = 200
+TRAIN_EPOCH	 	 = 10
 LEARNING_RATE  	 = 0.0005
 DECAY_RATE 		 = 0.95
 FOLD 			 = 10
 TRAIN_BATCH_SIZE = 100
 VALID_BATCH_SIZE = 100
 DISPLAY_STEP 	 = 1
+SAVE_STEP        = 5
 NOISE_STD 		 = 0.5
 
 BATCH_NORM_DECAY = 0.997
@@ -98,7 +99,7 @@ def batch_norm_old(x, bn_b, bn_g, phase_train):
     
     beta = bn_b
     gamma = bn_g
-    batch_mean, batch_var = tf.nn.moments(x, [0, 1, 2], name='moments')
+    batch_mean, batch_var = tf.nn.moments(x, [0, 1, 2, 3], name='moments')
 
     normed = tf.nn.batch_normalization(x, batch_mean, batch_var, beta, gamma, 1e-3)
     return normed
